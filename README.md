@@ -24,3 +24,11 @@ This repository contains the core logic for the **HunTian (浑天)** 1.58-bit te
 - **vavx3_api.h**：最终确定的 83 条主权指令集。
 - **无乘法算术**：三进制点积的高效实现。
 - **4320D 涡旋映射**：源自克里斯托弗符号的 O(1) 寻址逻辑。
+
+## 关联仓库 Related Repositories
+
+| 仓库 | 内容 |
+|------|------|
+| [discrete-mathematics](https://github.com/triqchem-lab/discrete-mathematics) | Agda 形式化验证 |
+| [scholar-loop](https://github.com/triqchem-lab/scholar-loop) | Scholar Loop 实验引擎 |
+| [math](https://github.com/triqchem-lab/math) | GF(3) C++23 数学库 |
