@@ -14,6 +14,8 @@
 #include "ternary_types.h"
 #include <stdint.h>
 #include <math.h>
+#include <stdlib.h> /* [整合修复] abs() 声明 (原 C99 编译报隐式声明) */
+#include <string.h> /* [整合修复] memcpy 声明 */
 
 /* ══════════════════════════════════════════════════════════════════════
  * 指令编号定义 (0-82)
@@ -340,7 +342,8 @@ static inline int64_t vavx3_dot_512(vavx3_512_t* a, vavx3_512_t* b) {
 /* 10: 三进制叉积（涡旋生成） */
 static inline Trit vavx3_cross_trit(Trit a, Trit b, Trit c) {
     /* 三维叉积的Trit版本 */
-    Trit diff = vavx3_sub_trit(b, c, &(Trit){TRIT_ZERO});
+    Trit _carry0 = TRIT_ZERO; /* [整合修复] C99 复合字面量 → C++ 构造 */
+    Trit diff = vavx3_sub_trit(b, c, &_carry0);
     return vavx3_mul_trit(a, diff);
 }
 
@@ -587,7 +590,8 @@ static inline Trit vavx3_gradient_trit(Trit left, Trit right) {
 /* 42: 旋度算子（熵旋流） */
 static inline Trit vavx3_curl_trit(Trit dx, Trit dy) {
     /* ∇×F 的简化版本 */
-    return vavx3_sub_trit(dx, dy, &(Trit){TRIT_ZERO});
+    Trit _carry0 = TRIT_ZERO; /* [整合修复] 同上 */
+    return vavx3_sub_trit(dx, dy, &_carry0);
 }
 
 /* 43: 散度算子 */
@@ -608,7 +612,8 @@ static inline Trit vavx3_geodesic_step(Trit pos, Trit vel, Trit gamma) {
     Trit acc = (Trit)(-vavx3_christoffel(vel, gamma));
     Trit carry = TRIT_ZERO;
     Trit new_vel = vavx3_add_trit(vel, acc, &carry);
-    return vavx3_add_trit(pos, new_vel, &(Trit){TRIT_ZERO});
+    Trit _carry1 = TRIT_ZERO; /* [整合修复] 同上 */
+    return vavx3_add_trit(pos, new_vel, &_carry1);
 }
 
 /* 46: 环面共形反演 */
@@ -699,8 +704,9 @@ static inline void vavx3_manifold_fold(vavx3_512_t* m) {
 
 /* 55: 流形融合 */
 static inline void vavx3_manifold_merge(vavx3_512_t* a, vavx3_512_t* b) {
+    Trit _carry0 = TRIT_ZERO; /* [整合修复] 复合字面量 → 具名局部变量 */
     for (int i = 0; i < VAVX3_TRIT_COUNT; i++) {
-        a->trits[i] = vavx3_add_trit(a->trits[i], b->trits[i], &(Trit){TRIT_ZERO});
+        a->trits[i] = vavx3_add_trit(a->trits[i], b->trits[i], &_carry0);
     }
 }
 
